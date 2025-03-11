@@ -177,7 +177,11 @@ class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
                     "metadata_data",
                 ],
             )
-            table.insert(data)
+            try:
+                table.insert(data)
+            except Exception as e:
+                print(f"Error saving data {data}")
+                raise(e)
         return config
 
     def put_writes(
