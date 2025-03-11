@@ -5,7 +5,9 @@
 To install the package, use the following command:
 
 ```bash
-pip3 install --upgrade --quiet git+https://github.com/snowch/langgraph_vastdb_checkpoint_saver.git --use-pep517
+pip3 install --upgrade langraph
+pip3 uninstall -y vastdb_checkpoint_saver # --upgrade doesn't work with git+https?
+pip3 install --quiet git+https://github.com/snowch/langgraph_vastdb_checkpoint_saver.git --use-pep517
 ```
 
 ##  Caveats
