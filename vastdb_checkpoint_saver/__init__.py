@@ -86,13 +86,13 @@ class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
 
             if checkpoint_id:
                 predicate = (
-                    (table.thread_id == thread_id)
-                    & (table.checkpoint_ns == checkpoint_ns)
-                    & (table.checkpoint_id == checkpoint_id)
+                    (table["thread_id"] == thread_id)
+                    & (table["checkpoint_ns"] == checkpoint_ns)
+                    & (table["checkpoint_id"] == checkpoint_id)
                 )
             else:
-                predicate = (table.thread_id == thread_id) & (
-                    table.checkpoint_ns == checkpoint_ns
+                predicate = (table["thread_id"] == thread_id) & (
+                    table["checkpoint_ns"] == checkpoint_ns
                 )
 
             reader = table.select(predicate=predicate)
@@ -125,17 +125,22 @@ class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
             schema = bucket.schema(self.schema_name)
             table = schema.table(self.table_name)
 
-            predicate = (table.thread_id == thread_id) & (
-                table.checkpoint_ns == checkpoint_ns
+            predicate = (table["thread_id"] == thread_id) & (
+                table["checkpoint_ns"] == checkpoint_ns
             )
+            
             if filter:
+                # For metadata filtering, we might need a different approach
+                # This is a simplified example that assumes metadata fields are directly accessible
+                # You may need to adjust this based on how metadata is actually stored
                 for key, value in filter.items():
-                    predicate = predicate & (getattr(table, f"metadata_data.{key}") == value)
+                    metadata_field = f"metadata_data.{key}"
+                    predicate = predicate & (table[metadata_field] == value)
 
             if before:
                 before_id = before["configurable"].get("checkpoint_id")
                 if before_id:
-                    predicate = predicate & (table.checkpoint_id < before_id)
+                    predicate = predicate & (table["checkpoint_id"] < before_id)
 
             reader = table.select(predicate=predicate, order_by=["checkpoint_id DESC"], limit=limit)
             result = reader.read_all()
