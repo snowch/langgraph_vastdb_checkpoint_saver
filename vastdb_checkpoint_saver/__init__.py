@@ -95,9 +95,24 @@ class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
                     table["checkpoint_ns"] == checkpoint_ns
                 )
 
+                # Use internal_row_id to get the latest record
+                reader = table.select(predicate=predicate, internal_row_id=True)
+                result = reader.read_all()
+                
+                if result.num_rows > 0:
+                    # Sort by row_id to get the latest record
+                    rows = result.to_pylist()
+                    latest_row = max(rows, key=lambda x: x["$row_id"])
+                    checkpoint = self.serde.loads(latest_row["checkpoint_data"])
+                    metadata = self.serde.loads(latest_row["metadata_data"])
+                    return CheckpointTuple(config, checkpoint, metadata)
+                else:
+                    return None
+            
+            # If checkpoint_id is specified, we don't need to get the latest
             reader = table.select(predicate=predicate)
-
             result = reader.read_all()
+            
             if result.num_rows > 0:
                 row = result.to_pylist()[0]
                 checkpoint = self.serde.loads(row["checkpoint_data"])
@@ -142,10 +157,22 @@ class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
                 if before_id:
                     predicate = predicate & (table["checkpoint_id"] < before_id)
 
-            reader = table.select(predicate=predicate, order_by=["checkpoint_id DESC"], limit=limit)
+            # Include internal_row_id to help with sorting
+            reader = table.select(
+                predicate=predicate, 
+                order_by=["checkpoint_id DESC"], 
+                limit=limit,
+                internal_row_id=True
+            )
             result = reader.read_all()
 
-            for row in result.to_pylist():
+            # Convert to list to be able to sort by row_id if needed
+            rows = result.to_pylist()
+            
+            # Optional: Sort by row_id for most recent first if checkpoint_id is not sufficient
+            # rows.sort(key=lambda x: x["$row_id"], reverse=True)
+            
+            for row in rows:
                 checkpoint = self.serde.loads(row["checkpoint_data"])
                 metadata = self.serde.loads(row["metadata_data"])
                 yield CheckpointTuple(config, checkpoint, metadata)
