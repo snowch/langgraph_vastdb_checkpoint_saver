@@ -11,6 +11,7 @@ from typing import (
     List,
     Optional,
     Tuple,
+    Sequence
 )
 
 from langchain_core.runnables import RunnableConfig
