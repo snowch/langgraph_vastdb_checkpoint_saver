@@ -8,6 +8,12 @@ To install the package, use the following command:
 pip3 install --upgrade --quiet git+https://github.com/snowch/langgraph_vastdb_checkpoint_saver.git --use-pep517
 ```
 
+##  Caveats
+
+- This is an early prototype - bugs will exist!
+- Multiple versions of records can exist.  Row_id is used to select the latest update.
+- Logic should be reviewed to verify row_id approach, and tests implemented
+
 ## Example
 
 ```python
@@ -36,8 +42,3 @@ saver.put(config, checkpoint={"id": "checkpoint_1"}, metadata={}, new_versions={
 checkpoint_tuple = saver.get_tuple(config)
 print(checkpoint_tuple)
 ```
-
-##  Caveats
-
-- Multiple versions of records can exist.  Row_id is used to select the latest update.
-- Logic should be reviewed to verify row_id approach, and tests implemented
