@@ -95,7 +95,7 @@ class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
                     table.checkpoint_ns == checkpoint_ns
                 )
 
-            reader = table.select(predicate=predicate, order_by=["checkpoint_id DESC"], limit=1)
+            reader = table.select(predicate=predicate)
 
             result = reader.read_all()
             if result.num_rows > 0:
