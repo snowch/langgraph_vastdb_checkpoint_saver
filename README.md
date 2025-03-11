@@ -14,7 +14,7 @@ pip3 install --quiet git+https://github.com/snowch/langgraph_vastdb_checkpoint_s
 
 - This is an early prototype - bugs will exist!
 - Multiple versions of records can exist.  Row_id is used to select the latest update.
-- Logic should be reviewed to verify row_id approach, and tests implemented
+- Logic should be reviewed to verify row_id approach, and tests should be implemented
 
 ## Example
 
