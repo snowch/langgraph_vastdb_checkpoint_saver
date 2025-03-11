@@ -68,8 +68,8 @@ class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
                         ("thread_id", pa.string()),
                         ("checkpoint_ns", pa.string()),
                         ("checkpoint_id", pa.string()),
-                        ("checkpoint_data", pa.string()),
-                        ("metadata_data", pa.string()),
+                        ("checkpoint_data", pa.binary()),
+                        ("metadata_data", pa.binary()),
                     ]
                 )
                 schema.create_table(self.table_name, columns)
