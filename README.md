@@ -36,3 +36,8 @@ saver.put(config, checkpoint={"id": "checkpoint_1"}, metadata={}, new_versions={
 checkpoint_tuple = saver.get_tuple(config)
 print(checkpoint_tuple)
 ```
+
+##  Caveats
+
+- Multiple versions of records can exist.  Row_id is used to select the latest update.
+- Logic should be reviewed to verify row_id approach, and tests implemented
