@@ -26,7 +26,7 @@ from langgraph.checkpoint.base import (
 )
 from langgraph.checkpoint.serde.base import SerializerProtocol
 
-class VastDBCheckPointSaver(BaseCheckpointSaver[int]):
+class VastDBCheckPointSaver(BaseCheckpointSaver[str]):
     """
     A CheckpointSaver implementation that uses VastDB as the backend.
     """
